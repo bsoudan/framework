@@ -8,19 +8,12 @@ class Multiwaiter extends RefCounted:
 
 	func _init(signals: Array) -> void:
 		for s in signals:
-			var signal_func = func(arg1 = NullSignal, arg2 = NullSignal, arg3 = NullSignal, arg4 = NullSignal, arg5 = NullSignal, arg6 = NullSignal, arg7 = NullSignal, arg8 = NullSignal, arg9 = NullSignal):
+			var signal_func = func(arg1 = Const.NullSignal, arg2 = Const.NullSignal, arg3 = Const.NullSignal, arg4 = Const.NullSignal, arg5 = Const.NullSignal, arg6 = Const.NullSignal, arg7 = Const.NullSignal, arg8 = Const.NullSignal, arg9 = Const.NullSignal):
 				on_signal(s, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
 			s.connect(signal_func)
 
-	var NullSignal: Signal = Signal()
-
-	func exclude_nulls(a: Array[Signal]):
-		return a.filter(func(s: Signal):
-			return s != NullSignal
-		)
-
-	func on_signal(sig: Signal, arg1 = NullSignal, arg2 = NullSignal, arg3 = NullSignal, arg4 = NullSignal, arg5 = NullSignal, arg6 = NullSignal, arg7 = NullSignal, arg8 = NullSignal, arg9 = NullSignal) -> void:
-		var args = exclude_nulls([arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9])
+	func on_signal(sig: Signal, arg1 = Const.NullSignal, arg2 = Const.NullSignal, arg3 = Const.NullSignal, arg4 = Const.NullSignal, arg5 = Const.NullSignal, arg6 = Const.NullSignal, arg7 = Const.NullSignal, arg8 = Const.NullSignal, arg9 = Const.NullSignal) -> void:
+		var args = Const.filter_null_signals([arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9])
 		any.emit(sig, args)
 
 		if len(any.get_connections()):
@@ -39,15 +32,8 @@ class Multiwaiter extends RefCounted:
 		for c in get_incoming_connections():
 			self.disconnect(c['signal'], c['callable'])
 
-var NullSignal: Signal = Signal()
-
-func exclude_nulls(a: Array[Signal]):
-	return a.filter(func(s: Signal):
-		return s != NullSignal
-	)
-
-func multiwait(arg1: Signal, arg2: Signal, arg3: Signal = NullSignal, arg4: Signal = NullSignal, arg5: Signal = NullSignal, arg6: Signal = NullSignal, arg7: Signal = NullSignal, arg8: Signal = NullSignal, arg9: Signal = NullSignal):
-	var args = exclude_nulls([arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9])
+func multiwait(arg1: Signal, arg2: Signal, arg3: Signal = Const.NullSignal, arg4: Signal = Const.NullSignal, arg5: Signal = Const.NullSignal, arg6: Signal = Const.NullSignal, arg7: Signal = Const.NullSignal, arg8: Signal = Const.NullSignal, arg9: Signal = Const.NullSignal):
+	var args = Const.filter_null_signals([arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9])
 	return Multiwaiter.new(args)
 
 func timeout(duration: float):
@@ -139,11 +125,8 @@ class ThreadedResourceLoader extends RefCounted:
 	
 	static var jobs = JobQueue.new()
 
-	var NullCallable = func():
-		pass
-
-	func _init(path, progress_func: Callable = NullCallable):
-		if progress_func != NullCallable:
+	func _init(path, progress_func: Callable = Const.NullCallable):
+		if progress_func != Const.NullCallable:
 			progress.connect(progress_func)
 		jobs.add_job(func(): load_job(path))
 		
@@ -176,12 +159,9 @@ class ThreadedResourceLoader extends RefCounted:
 					
 		done.emit(resource, err)
 
-var NullCallable = func():
-	pass
-
-func load_threaded(path, progress_func: Callable = NullCallable):
+func load_threaded(path, progress_func: Callable = Const.NullCallable):
 	if ResourceLoader.has_cached(path):
-		if progress_func != NullCallable:
+		if progress_func != Const.NullCallable:
 			progress_func.call(1.0)
 		return ResourceLoader.load(path)
 

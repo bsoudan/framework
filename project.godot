@@ -18,6 +18,8 @@ boot_splash/minimum_display_time=1000
 
 [autoload]
 
+Const="*res://Util/Const.gd"
+Assert="res://Util/Assert.gd"
 Util="*res://Util/Util.gd"
 Director="*res://SceneGraph/Director.tscn"
 
