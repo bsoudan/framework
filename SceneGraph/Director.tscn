@@ -1,0 +1,81 @@
+[gd_scene load_steps=3 format=3 uid="uid://q55gck3jgaiq"]
+
+[ext_resource type="Script" path="res://SceneGraph/Director.gd" id="1_xr4th"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_703fh"]
+bg_color = Color(0.71633, 0.706563, 0.278463, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="Director" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_xr4th")
+
+[node name="Status" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 64
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 64
+
+[node name="ErrorLabel" type="Label" parent="Status"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Director"
+
+[node name="ColorRect" type="ColorRect" parent="Status/ErrorLabel"]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.654902, 0.0431373, 0.0509804, 1)
+
+[node name="Control" type="Control" parent="Status"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="LoadProgress" type="ProgressBar" parent="Status/Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -256.0
+offset_top = -32.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_703fh")
+rounded = true
+
+[node name="Fader" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
