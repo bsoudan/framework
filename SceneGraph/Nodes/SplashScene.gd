@@ -10,8 +10,10 @@ func _ready():
 		result = {'skip_splash' : true}
 	complete(result)
 
-func _unhandled_input(event: InputEvent):
+func _gui_input(event: InputEvent):
 	if event is InputEventMouseButton and event.is_pressed:
 		skip.emit()
+
+func _unhandled_input(event: InputEvent):
 	if event is InputEventKey and event.is_pressed:
 		skip.emit()
