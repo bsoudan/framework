@@ -166,3 +166,33 @@ func load_threaded(path, progress_func: Callable = Const.NullCallable):
 		return ResourceLoader.load(path)
 
 	return ThreadedResourceLoader.new(path, progress_func)
+
+func find_nodes_by_class(node: Node, className: String, recursive: bool) -> Array[Node]:
+	var result: Array[Node]
+	find_nodes_by_class_(node, className, recursive, result)
+	return result
+
+func find_nodes_by_class_(node: Node, className: String, recursive: bool, result: Array[Node]) -> void:
+	for child in node.get_children():
+		if child.is_class(className) :
+			result.push_back(child)
+		if recursive:
+			find_nodes_by_class_(child, className, recursive, result)
+
+class Error extends Object:
+	var message: String
+
+	func _init(message_: String):
+		message = message_
+
+	func _to_string() -> String:
+		return "error: %s" % message
+
+func is_error(object):
+	return object is Util.Error
+
+func error(msg):
+	return Error.new(msg)
+
+
+	
