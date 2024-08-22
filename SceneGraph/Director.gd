@@ -9,7 +9,10 @@ func scene_transition(scene, result):
 		["Splash", _]:
 			return "res://Scenes/Splash2.tscn"
 		["Splash2", _]:
-			return "res://Scenes/Splash.tscn"
+			return "res://Scenes/MainMenu.tscn"
+		["MainMenu", "ExitGameButton"]:
+			return "res://Scenes/Quit.tscn"
+	return Util.error("unknown scene transition for scene %s, result %s" % [scene.name, result])
 
 var jobs = Util.job_queue()
 
@@ -32,13 +35,17 @@ func scene_complete_job(scene, result):
 
 	var next_scene = scene_transition(scene, result)
 
-	if not next_scene:
-		push_warning(ctx.info("no scene transition defined"))
+	if not next_scene or Util.is_error(next_scene):
+		if not next_scene:
+			next_scene = Util.error("no scene transition defined for scene %s" % scene)
+
 		if parent == get_parent():
 			%ErrorLabel.visible = true
-			%ErrorLabel.text = "Director: no scene transition defined for scene %s" % scene.name
-		return
+			%ErrorLabel.text = "Director: %s" % next_scene
 		
+		push_warning(ctx.info("%s" % next_scene))
+		return
+
 	ctx.info("next scene is %s" % next_scene)
 
 	var progress = func(percent):
@@ -61,7 +68,7 @@ func scene_complete_job(scene, result):
 	while i < 100.0:
 		%LoadProgress.value = i
 		await Util.next_process_frame()
-		i = i + 0.1
+		i = i + 1.0
 	%LoadProgress.visible = false
 	
 	new_scene = new_scene.instantiate()	
