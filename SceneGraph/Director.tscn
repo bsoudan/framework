@@ -1,6 +1,94 @@
-[gd_scene load_steps=4 format=3 uid="uid://q55gck3jgaiq"]
+[gd_scene load_steps=8 format=3 uid="uid://q55gck3jgaiq"]
 
 [ext_resource type="Script" path="res://SceneGraph/Director.gd" id="1_xr4th"]
+
+[sub_resource type="Animation" id="Animation_7bnxq"]
+resource_name = "FromBlack"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0.12549, 0.12549, 0.12549, 1), Color(0, 0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_4tpxf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_f8lkr"]
+resource_name = "ToBlack"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 0), Color(0.12549, 0.12549, 0.12549, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_mv6a7"]
+_data = {
+"FromBlack": SubResource("Animation_7bnxq"),
+"RESET": SubResource("Animation_4tpxf"),
+"ToBlack": SubResource("Animation_f8lkr")
+}
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wqeps"]
 bg_color = Color(0.835294, 0, 0, 1)
@@ -20,16 +108,21 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [node name="Director" type="Control"]
+z_index = 2048
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 2
 script = ExtResource("1_xr4th")
 
-[node name="Status" type="MarginContainer" parent="."]
+[node name="Fader" type="ColorRect" parent="."]
+visible = false
+modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -37,10 +130,27 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 64
-theme_override_constants/margin_top = 64
-theme_override_constants/margin_right = 64
-theme_override_constants/margin_bottom = 64
+
+[node name="FadeAnimation" type="AnimationPlayer" parent="Fader"]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_mv6a7")
+}
+autoplay = "RESET"
+
+[node name="Status" type="MarginContainer" parent="."]
+z_index = 2048
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
 [node name="ErrorLabel" type="Label" parent="Status"]
 unique_name_in_owner = true
@@ -73,7 +183,7 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -256.0
+offset_left = -127.0
 offset_top = -27.0
 grow_horizontal = 0
 grow_vertical = 0
@@ -82,13 +192,3 @@ size_flags_vertical = 8
 mouse_filter = 2
 theme_override_styles/fill = SubResource("StyleBoxFlat_703fh")
 rounded = true
-
-[node name="Fader" type="ColorRect" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2

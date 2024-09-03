@@ -23,6 +23,21 @@ Assert="res://Util/Assert.gd"
 Util="*res://Util/Util.gd"
 Director="*res://SceneGraph/Director.tscn"
 
+[display]
+
+window/size/viewport_width=960
+window/size/viewport_height=540
+window/size/mode=3
+window/stretch/mode="viewport"
+window/stretch/aspect="expand"
+window/stretch/scale=2.0
+window/stretch/scale_mode="integer"
+
+[gui]
+
+theme/custom="res://DefaultTheme.tres"
+theme/custom_font="res://HopeGold.ttf"
+
 [input]
 
 jump={
@@ -30,3 +45,8 @@ jump={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+
+[rendering]
+
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true

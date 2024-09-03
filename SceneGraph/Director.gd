@@ -1,5 +1,6 @@
 extends Node
 
+	
 func scene_transition(scene, result):
 	match [scene.name, result]:
 		["Boot", _]:
@@ -20,9 +21,14 @@ func on_scene_complete(params, scene):
 	jobs.add_job(func(): return await scene_complete_job(scene, params))
 	
 func scene_complete_job(scene, result):
+	%FadeAnimation.play("ToBlack", -1, 3)
+	
 	var ctx = Util.context("Director::scene_complete_job", "scene", scene.name)
 	var is_current_scene = scene == get_tree().current_scene
 	var parent = scene.get_parent()
+	
+	#if is_current_scene:
+	#	get_tree().paused = true
 
 	ctx.info("result=%s%s" % [result, ", is_current_scene" if is_current_scene else ""])
 	
@@ -63,6 +69,10 @@ func scene_complete_job(scene, result):
 			%ErrorLabel.text = "Director: %s" % err
 		return
 
+	push_warning(ctx.info("waiting for animation to finish"))
+	await %FadeAnimation.animation_finished
+	push_warning(ctx.info("animation finished"))
+
 	%LoadProgress.visible = true
 	var i = 1.0
 	while i < 100.0:
@@ -73,9 +83,16 @@ func scene_complete_job(scene, result):
 	
 	new_scene = new_scene.instantiate()	
 	on_new_scene(new_scene)
+	
+
 	parent.add_child(new_scene)
 	if is_current_scene:
 		get_tree().current_scene = new_scene
+
+	push_warning(ctx.info("starting from black"))
+	%FadeAnimation.play("FromBlack", -1, 3.0)
+	await %FadeAnimation.animation_finished
+	push_warning(ctx.info("done"))
 	
 	ctx.info("scene change complete.")
 
